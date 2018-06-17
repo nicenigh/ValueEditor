@@ -1,6 +1,6 @@
 ﻿namespace valueEditor
 {
-    partial class Form2
+    partial class settingForm
     {
         /// <summary>
         /// Required designer variable.

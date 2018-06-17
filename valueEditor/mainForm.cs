@@ -9,11 +9,13 @@ using System.Windows.Forms;
 
 namespace valueEditor
 {
-    public partial class Form1 : Form
+    public partial class mainForm : Form
     {
-        Setting s = Setting.GetSetting();
-        OpenFile f = OpenFile.GetOpenFile();
-        public Form1()
+        public static CustomRichTextBox nameBox;
+        public static CustomRichTextBox valueBox;
+        Setting s = Setting.getHandler();
+        FileHelper f = FileHelper.getHandler();
+        public mainForm()
         {
             InitializeComponent();
         }
@@ -21,10 +23,14 @@ namespace valueEditor
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Text = "valueEditor";
-            customRichTextBox1.OtherRichTextBox = customRichTextBox2.cstRichTextBox1;
-            customRichTextBox2.OtherRichTextBox = customRichTextBox1.cstRichTextBox1;
+            nameBox = this.customRichTextBox1;
+            valueBox = this.customRichTextBox2;
+            nameBox.OtherRichTextBox = valueBox.cstRichTextBox1;
+            valueBox.OtherRichTextBox = nameBox.cstRichTextBox1;
+            f.setTextBox(nameBox.cstRichTextBox1, valueBox.cstRichTextBox1);
+            Configuration.GetAppConfig();
         }
-        
+
         private void 打开ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialog1.ShowDialog();
@@ -51,7 +57,7 @@ namespace valueEditor
             {
                 MessageBox.Show("保存失败");
             }
-            
+
         }
 
         private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -67,7 +73,7 @@ namespace valueEditor
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
-            f.readFile(openFileDialog1.FileName, customRichTextBox1, customRichTextBox2);
+            f.read(openFileDialog1.FileName);
 
             this.Text = "valueEditor - " + openFileDialog1.SafeFileName;
         }
@@ -82,5 +88,14 @@ namespace valueEditor
             s.Setnode();
         }
 
+        private void 正则表达式ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void uTF8ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

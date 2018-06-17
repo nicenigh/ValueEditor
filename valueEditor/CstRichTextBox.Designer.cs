@@ -32,7 +32,10 @@
             // 
             // CstRichTextBox
             // 
-            this.WordWrap = false;
+            this.AcceptsTab = true;
+            this.AutoWordSelection = true;
+            this.EnableAutoDragDrop = true;
+            this.HideSelection = false;
             this.SelectionChanged += new System.EventHandler(this.CstRichTextBox_SelectionChanged);
             this.Enter += new System.EventHandler(this.CstRichTextBox_Enter);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CstRichTextBox_KeyPress);

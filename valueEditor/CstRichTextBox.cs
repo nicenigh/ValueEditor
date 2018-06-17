@@ -11,7 +11,7 @@ namespace valueEditor
     public delegate void SendMessage(Message msg);
     public partial class CstRichTextBox : RichTextBox
     {
-        private  bool syncroll = true;
+        private bool syncroll = true;
         private bool syncreturn = true;
         private bool syncselect = true;
         private int s = 0, l = 0, lines = 0;
@@ -72,7 +72,24 @@ namespace valueEditor
         public event SendMessage SendMessageEvent;
         void myRichTextBox1_SendMessageEvent(Message msg)
         {
-                otherRichTextBox.Scroll(msg);
+            if (_otherRichTextBox != null &&
+                (msg.Msg == WM_HSCROLL
+                || msg.Msg == WM_VSCROLL
+                //|| m.Msg == WM_SETCURSOR
+                || msg.Msg == WM_MOUSEWHEEL
+                //|| m.Msg == WM_MOUSEMOVE
+                //|| m.Msg == WM_MOUSELEAVE
+                //|| m.Msg == WM_MOUSELAST
+                //|| m.Msg == WM_MOUSEHOVER
+                //|| m.Msg == WM_MOUSEFIRST
+                //|| m.Msg == WM_MOUSEACTIVATE
+                ))
+            {
+                if (this.syncroll)
+                {
+                    otherRichTextBox.Scroll(msg);
+                }
+            }
         }
         protected override void WndProc(ref Message m)
         {
@@ -89,20 +106,14 @@ namespace valueEditor
                 //|| m.Msg == WM_MOUSEACTIVATE
                 ))
             {
-                if (SendMessageEvent != null)
-                {
-                    SendMessageEvent(m);
-                }
+                SendMessageEvent?.Invoke(m);
             }
             base.WndProc(ref m);
         }
         public void Scroll(Message m)
         {
-            if (this.syncroll)
-            {
-                m.HWnd = this.Handle;
-                WndProc(ref m);
-            }
+            m.HWnd = this.Handle;
+            WndProc(ref m);
         }
         #endregion
 
@@ -146,6 +157,7 @@ namespace valueEditor
                 catch { }
             }
         }
+
         public void deColor()
         {
             if (_otherRichTextBox != null)
@@ -166,6 +178,10 @@ namespace valueEditor
         #region 同步换行
         private void CstRichTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
+            if (e.KeyChar == '\t')
+            {
+
+            }
             if(this.syncselect)
             {
                 int nlines = this.Text.Split('\n').Length;
@@ -179,6 +195,7 @@ namespace valueEditor
                             int row = this.GetLineFromCharIndex(this.SelectionStart);
                             int i = _otherRichTextBox.GetFirstCharIndexFromLine(row);
                             _otherRichTextBox.Text = _otherRichTextBox.Text.Substring(0, i) + '\n' + _otherRichTextBox.Text.Substring(i);
+                            return;
                         }
                         catch { }
                     }
@@ -190,6 +207,7 @@ namespace valueEditor
                             int i = _otherRichTextBox.GetFirstCharIndexFromLine(row);
                             int i2 = _otherRichTextBox.GetFirstCharIndexFromLine(row + lines - nlines);
                             _otherRichTextBox.Text = _otherRichTextBox.Text.Substring(0, i) + _otherRichTextBox.Text.Substring(i2);
+                            return;
                         }
                         catch { }
                     }

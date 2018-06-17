@@ -8,31 +8,39 @@ using System.Windows.Forms;
 
 namespace valueEditor
 {
-    public partial class Form2 : Form
+    public partial class settingForm : Form
     {
-        private string mode;
-        public Form2(string _mode)
+        private mode _mode;
+        Setting s = Setting.getHandler();
+
+        public settingForm(mode _mode)
         {
             InitializeComponent();
-            this.mode = _mode;
+            this._mode = _mode;
+        }
+
+        public enum mode
+        {
+            split,
+            node
         }
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            switch(mode)
+            switch (_mode)
             {
-                case "split":
+                case mode.split:
                     this.Text = "分隔符设定";
                     kwp.Visible = true;
-                    foreach (char kw in Setting.splitkw)
+                    foreach (string kw in s.splitkw)
                     {
                         kwlistBox.Items.Add(kw);
                     }
                     break;
-                case "node":
+                case mode.node:
                     this.Text = "注释符设定";
                     kwp.Visible = true;
-                    foreach (char kw in Setting.nodekw)
+                    foreach (string kw in s.nodekw)
                     {
                         kwlistBox.Items.Add(kw);
                     }
@@ -61,23 +69,25 @@ namespace valueEditor
 
         private void savebutton_Click(object sender, EventArgs e)
         {
-            switch (mode)
+            switch (_mode)
             {
-                case "split":
-                    Setting.splitkw.Clear();
-                    foreach (char kw in kwlistBox.Items)
+                case mode.split:
+                    s.splitkw.Clear();
+                    foreach (string kw in kwlistBox.Items)
                     {
-                        Setting.splitkw.Add(kw);
+                        s.splitkw.Add(kw);
                     }
                     break;
-                case "node":
-                    Setting.nodekw.Clear();
-                    foreach (char kw in kwlistBox.Items)
+                case mode.node:
+                    s.nodekw.Clear();
+                    foreach (string kw in kwlistBox.Items)
                     {
-                        Setting.nodekw.Add(kw);
+                        s.nodekw.Add(kw);
                     }
                     break;
             }
+
+            Configuration.UpdateAppConfig();
             this.Close();
         }
     }
