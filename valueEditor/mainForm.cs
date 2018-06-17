@@ -62,7 +62,7 @@ namespace valueEditor
 
         private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            String str = "valueEditor   v0.02\rby NiceNight\r2016-7-19";
+            String str = "valueEditor   v0.03\rby NiceNight\r2017-10-02";
             MessageBox.Show(str);
         }
 
