@@ -34,9 +34,6 @@
             this.addbutton = new System.Windows.Forms.Button();
             this.cancelbutton = new System.Windows.Forms.Button();
             this.savebutton = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.kwp.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,7 +47,7 @@
             this.kwp.Dock = System.Windows.Forms.DockStyle.Fill;
             this.kwp.Location = new System.Drawing.Point(0, 0);
             this.kwp.Name = "kwp";
-            this.kwp.Size = new System.Drawing.Size(457, 345);
+            this.kwp.Size = new System.Drawing.Size(335, 245);
             this.kwp.TabIndex = 0;
             this.kwp.Visible = false;
             // 
@@ -58,14 +55,14 @@
             // 
             this.kwlistBox.FormattingEnabled = true;
             this.kwlistBox.ItemHeight = 12;
-            this.kwlistBox.Location = new System.Drawing.Point(77, 57);
+            this.kwlistBox.Location = new System.Drawing.Point(22, 22);
             this.kwlistBox.Name = "kwlistBox";
             this.kwlistBox.Size = new System.Drawing.Size(185, 148);
             this.kwlistBox.TabIndex = 17;
             // 
             // delbutton
             // 
-            this.delbutton.Location = new System.Drawing.Point(300, 114);
+            this.delbutton.Location = new System.Drawing.Point(227, 79);
             this.delbutton.Name = "delbutton";
             this.delbutton.Size = new System.Drawing.Size(75, 23);
             this.delbutton.TabIndex = 13;
@@ -75,7 +72,7 @@
             // 
             // addbutton
             // 
-            this.addbutton.Location = new System.Drawing.Point(300, 57);
+            this.addbutton.Location = new System.Drawing.Point(227, 22);
             this.addbutton.Name = "addbutton";
             this.addbutton.Size = new System.Drawing.Size(75, 23);
             this.addbutton.TabIndex = 12;
@@ -85,7 +82,7 @@
             // 
             // cancelbutton
             // 
-            this.cancelbutton.Location = new System.Drawing.Point(295, 264);
+            this.cancelbutton.Location = new System.Drawing.Point(205, 197);
             this.cancelbutton.Name = "cancelbutton";
             this.cancelbutton.Size = new System.Drawing.Size(75, 23);
             this.cancelbutton.TabIndex = 15;
@@ -95,7 +92,7 @@
             // 
             // savebutton
             // 
-            this.savebutton.Location = new System.Drawing.Point(121, 264);
+            this.savebutton.Location = new System.Drawing.Point(52, 197);
             this.savebutton.Name = "savebutton";
             this.savebutton.Size = new System.Drawing.Size(75, 23);
             this.savebutton.TabIndex = 14;
@@ -103,48 +100,17 @@
             this.savebutton.UseVisualStyleBackColor = true;
             this.savebutton.Click += new System.EventHandler(this.savebutton_Click);
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(254, 223);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 12);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "2016-1-19";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(236, 197);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(77, 12);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "by NiceNight";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(143, 109);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(119, 12);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "valueEditor   v0.01";
-            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(457, 345);
+            this.ClientSize = new System.Drawing.Size(335, 245);
             this.Controls.Add(this.kwp);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Name = "Form2";
             this.Text = "Form2";
             this.Load += new System.EventHandler(this.Form2_Load);
             this.kwp.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -156,8 +122,5 @@
         private System.Windows.Forms.Button cancelbutton;
         private System.Windows.Forms.Button savebutton;
         private System.Windows.Forms.ListBox kwlistBox;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
     }
 }

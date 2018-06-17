@@ -11,7 +11,8 @@ namespace valueEditor
 {
     public partial class Form1 : Form
     {
-        Class1 c = new Class1();
+        Setting s = Setting.GetSetting();
+        OpenFile f = OpenFile.GetOpenFile();
         public Form1()
         {
             InitializeComponent();
@@ -55,8 +56,8 @@ namespace valueEditor
 
         private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form2 f2 = new Form2("about", c);
-            f2.ShowDialog();
+            String str = "valueEditor   v0.02\rby NiceNight\r2016-7-19";
+            MessageBox.Show(str);
         }
 
         private void 设置ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -66,28 +67,20 @@ namespace valueEditor
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
-
-            customRichTextBox1.cstRichTextBox1.isloaded = false;
-            customRichTextBox2.cstRichTextBox1.isloaded = false;
-            c.readFile(openFileDialog1.FileName);
-            customRichTextBox1.cstRichTextBox1.Text = c.sname;
-            customRichTextBox2.cstRichTextBox1.Text = c.svalue;
-            customRichTextBox1.cstRichTextBox1.isloaded = true;
-            customRichTextBox2.cstRichTextBox1.isloaded = true;
+            f.readFile(openFileDialog1.FileName, customRichTextBox1, customRichTextBox2);
 
             this.Text = "valueEditor - " + openFileDialog1.SafeFileName;
         }
 
         private void 分隔符ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form2 f2 = new Form2("split", c);
-            f2.ShowDialog();
+            s.Setsplit();
         }
 
         private void 注释符ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form2 f2 = new Form2("node", c);
-            f2.ShowDialog();
+            s.Setnode();
         }
+
     }
 }

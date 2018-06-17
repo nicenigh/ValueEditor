@@ -11,6 +11,7 @@ namespace valueEditor
 {
     public partial class CustomRichTextBox : UserControl
     {
+        private bool showlineno = true;
         public CustomRichTextBox()
         {
             InitializeComponent();
@@ -44,7 +45,14 @@ namespace valueEditor
 
             set { this.cstRichTextBox1.OtherRichTextBox = value; }
         }
+        public bool ShowLineNo
+        {
+            get { return this.showlineno; }
 
+            set { this.showlineno = value; }
+        }
+
+        #region 显示行号
         private void showLineNo()
         {
             //获得当前坐标信息
@@ -52,7 +60,7 @@ namespace valueEditor
             int crntFirstIndex = this.cstRichTextBox1.GetCharIndexFromPosition(p);
             int crntFirstLine = this.cstRichTextBox1.GetLineFromCharIndex(crntFirstIndex);
             Point crntFirstPos = this.cstRichTextBox1.GetPositionFromCharIndex(crntFirstIndex);
-            
+
             p.Y += this.cstRichTextBox1.Height;
             int crntLastIndex = this.cstRichTextBox1.GetCharIndexFromPosition(p);
             int crntLastLine = this.cstRichTextBox1.GetLineFromCharIndex(crntLastIndex);
@@ -92,7 +100,10 @@ namespace valueEditor
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            showLineNo();
+            if (this.showlineno)
+            {
+                showLineNo();
+            }
         }
 
         private void cstRichTextBox1_TextChanged(object sender, EventArgs e)
@@ -104,6 +115,8 @@ namespace valueEditor
         {
             panel1.Invalidate();
         }
+
+        #endregion
 
         private void cstRichTextBox1_MouseDown(object sender, MouseEventArgs e)
         {

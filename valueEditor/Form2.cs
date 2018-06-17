@@ -11,12 +11,10 @@ namespace valueEditor
     public partial class Form2 : Form
     {
         private string mode;
-        private Class1 c;
-        public Form2(string _mode, Class1 _c)
+        public Form2(string _mode)
         {
             InitializeComponent();
             this.mode = _mode;
-            this.c = _c;
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -26,7 +24,7 @@ namespace valueEditor
                 case "split":
                     this.Text = "分隔符设定";
                     kwp.Visible = true;
-                    foreach (char kw in c.splitkw)
+                    foreach (char kw in Setting.splitkw)
                     {
                         kwlistBox.Items.Add(kw);
                     }
@@ -34,13 +32,10 @@ namespace valueEditor
                 case "node":
                     this.Text = "注释符设定";
                     kwp.Visible = true;
-                    foreach (char kw in c.nodekw)
+                    foreach (char kw in Setting.nodekw)
                     {
                         kwlistBox.Items.Add(kw);
                     }
-                    break;
-                case "about":
-                    this.Text = "关于";
                     break;
             }
         }
@@ -69,17 +64,17 @@ namespace valueEditor
             switch (mode)
             {
                 case "split":
-                    c.splitkw.Clear();
+                    Setting.splitkw.Clear();
                     foreach (char kw in kwlistBox.Items)
                     {
-                        c.splitkw.Add(kw);
+                        Setting.splitkw.Add(kw);
                     }
                     break;
                 case "node":
-                    c.nodekw.Clear();
+                    Setting.nodekw.Clear();
                     foreach (char kw in kwlistBox.Items)
                     {
-                        c.nodekw.Add(kw);
+                        Setting.nodekw.Add(kw);
                     }
                     break;
             }
