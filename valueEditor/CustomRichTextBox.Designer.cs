@@ -1,4 +1,4 @@
-﻿namespace valueEditor
+﻿namespace ValueEditor
 {
     partial class CustomRichTextBox
     {
@@ -23,58 +23,84 @@
         #region 组件设计器生成的代码
 
         /// <summary> 
-        /// 设计器支持所需的方法 - 不要
+        /// 设计器支持所需的方法 - 不要修改
         /// 使用代码编辑器修改此方法的内容。
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.cstRichTextBox1 = new valueEditor.CstRichTextBox(this.components);
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.panel = new System.Windows.Forms.Panel();
+            this.textBox = new ValueEditor.SyncRichTextBox();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel1
+            // splitContainer1
             // 
-            this.panel1.BackColor = System.Drawing.Color.Silver;
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(35, 261);
-            this.panel1.TabIndex = 0;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer1.IsSplitterFixed = true;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
             // 
-            // cstRichTextBox1
+            // splitContainer1.Panel1
             // 
-            this.cstRichTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.cstRichTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cstRichTextBox1.Location = new System.Drawing.Point(35, 0);
-            this.cstRichTextBox1.Name = "cstRichTextBox1";
-            this.cstRichTextBox1.OtherRichTextBox = null;
-            this.cstRichTextBox1.Size = new System.Drawing.Size(267, 261);
-            this.cstRichTextBox1.TabIndex = 1;
-            this.cstRichTextBox1.Text = "";
-            this.cstRichTextBox1.WordWrap = false;
-            this.cstRichTextBox1.VScroll += new System.EventHandler(this.cstRichTextBox1_VScroll);
-            this.cstRichTextBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cstRichTextBox1_MouseClick);
-            this.cstRichTextBox1.TextChanged += new System.EventHandler(this.cstRichTextBox1_TextChanged);
-            this.cstRichTextBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.cstRichTextBox1_MouseDown);
-            this.cstRichTextBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.cstRichTextBox1_MouseUp);
+            this.splitContainer1.Panel1.Controls.Add(this.panel);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.textBox);
+            this.splitContainer1.Size = new System.Drawing.Size(150, 150);
+            this.splitContainer1.SplitterDistance = 40;
+            this.splitContainer1.SplitterWidth = 1;
+            this.splitContainer1.TabIndex = 0;
+            // 
+            // panel
+            // 
+            this.panel.BackColor = System.Drawing.Color.Silver;
+            this.panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel.Location = new System.Drawing.Point(0, 0);
+            this.panel.Name = "panel";
+            this.panel.Size = new System.Drawing.Size(40, 150);
+            this.panel.TabIndex = 0;
+            // 
+            // textBox
+            // 
+            this.textBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox.Location = new System.Drawing.Point(0, 0);
+            this.textBox.Name = "textBox";
+            this.textBox.OtherTextBox = null;
+            this.textBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
+            this.textBox.Size = new System.Drawing.Size(109, 150);
+            this.textBox.Sync = true;
+            this.textBox.SyncReturn = true;
+            this.textBox.SyncScrolll = true;
+            this.textBox.SyncSelect = true;
+            this.textBox.TabIndex = 0;
+            this.textBox.Text = "";
+            this.textBox.WordWrap = false;
             // 
             // CustomRichTextBox
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.cstRichTextBox1);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.splitContainer1);
             this.Name = "CustomRichTextBox";
-            this.Size = new System.Drawing.Size(302, 261);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        public  valueEditor.CstRichTextBox cstRichTextBox1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Panel panel;
+        private SyncRichTextBox textBox;
     }
 }

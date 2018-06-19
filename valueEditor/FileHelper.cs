@@ -1,112 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.IO.MemoryMappedFiles;
+using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
-namespace valueEditor
+namespace ValueEditor
 {
     public class FileHelper
     {
+        public List<Content> Contents { get; private set; } = new List<Content>();
 
-        private static FileHelper f = null;
-        private Setting s = Setting.getHandler();
-
-        private CstRichTextBox nameBox;
-        private CstRichTextBox valueBox;
-        private List<Content> lines;
-
-        private string path;
-
-        private FileHelper()
+        public void Read(string path)
         {
-        }
-
-        public static FileHelper getHandler()
-        {
-            if (f == null)
-                f = new FileHelper();
-            return f;
-        }
-
-        public void setTextBox(CstRichTextBox name, CstRichTextBox value)
-        {
-            this.nameBox = name;
-            this.valueBox = value;
-        }
-
-        public void read(string path)
-        {
-            this.path = path;
-            lines = new List<Content>();
-            Setting.selectwithother = false;
-            nameBox.Text = "";
-            valueBox.Text = "";
-
-            StreamReader sr = new StreamReader(path, Encoding.Default);
-            string line;
-            while ((line = sr.ReadLine()) != null)
+            Contents.Clear();
+            using (MemoryMappedFile file = MemoryMappedFile.CreateFromFile(path, FileMode.Open))
             {
-                var split = splitValue(line);
-                lines.Add(split);
-                nameBox.Text += split.Name + "\n";
-                valueBox.Text += split.Value + "\n";
-            }
+                MainForm.nameBox.TextBox.Text = "";
+                MainForm.valueBox.TextBox.Text = "";
+                MainForm.nameBox.TextBox.Sync = false;
+                MainForm.valueBox.TextBox.Sync = false;
 
-            Setting.selectwithother = true;
+                string pattern = @"^(?<a>\s*?)(?<b>.+?)(?<c>\s*=\s*?)(?<d>.+?)(?<e>\s*?)$";
+                Regex regex = new Regex(pattern, RegexOptions.Singleline);
+                long lineno = 0;
+
+                using (MemoryMappedViewStream stream = file.CreateViewStream())
+                {
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        string line;
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            Match match = regex.Match(line);
+                            if (match.Success)
+                            {
+                                Contents.Add(new Content { Line = lineno, a = match.Groups["a"].Value, b = match.Groups["b"].Value, c = match.Groups["c"].Value, d = match.Groups["d"].Value, e = match.Groups["e"].Value });
+                            }
+                            else
+                            {
+                                Contents.Add(new Content { Line = lineno, Name = line, Value = "" });
+                            }
+                            lineno++;
+                        }
+                    }
+                }
+            }
+            MainForm.nameBox.TextBox.Text = string.Join("\r\n", Contents.Select(en => en.b));
+            MainForm.valueBox.TextBox.Text = string.Join("\r\n", Contents.Select(en => en.d));
+
+            MainForm.nameBox.TextBox.Sync = true;
+            MainForm.valueBox.TextBox.Sync = true;
         }
 
-        public void save()
+
+        public void Save(string path)
         {
             File.Copy(path, path + ".bak");
-            File.Delete(path);
             FileStream fs = new FileStream(path, FileMode.Create);
             StreamWriter sw = new StreamWriter(fs);
             //开始写入
-            string line;
-            for (int i = 0; i < nameBox.Lines.Length; i++)
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < Contents.Count - 1; i++)
             {
-                line = nameBox.Lines[i];
-                if (valueBox.Lines[i] != "")
-                {
-                    line += lines[i].Split + valueBox.Lines[i];
-                }
-                sw.WriteLine(line);
+                var content = Contents[i];
+                content.Name = MainForm.nameBox.TextBox.Lines[i];
+                content.Value = MainForm.valueBox.TextBox.Lines[i];
+                builder.AppendLine(content.ToString());
             }
-            sw.Write("Hello World!!!!");
+            sw.Write(builder.ToString());
             //清空缓冲区
             sw.Flush();
             //关闭流
             sw.Close();
             fs.Close();
-        }
-
-
-        public Content splitValue(string line)
-        {
-            string name = line;
-            string value = "";
-            if (line.Trim().Length == 0)
-            {
-                return new Content { Name = name, Value = value, Split = "", Line = line };
-            }
-            foreach (var kw in s.nodekw)
-            {
-                if (line.Trim().IndexOf(kw) == 0)
-                {
-                    return new Content { Name = name, Value = value, Split = "", Line = line };
-                }
-            }
-            foreach (var kw in s.splitkw)
-            {
-                if (line.IndexOf(kw) > -1)
-                {
-                    name = line.Substring(0, line.LastIndexOf(kw));
-                    value = line.Substring(line.LastIndexOf(kw) + kw.Length);
-                    return new Content { Name = name, Value = value, Split = kw, Line = line };
-                }
-            }
-            return new Content { Name = name, Value = value, Split = "", Line = line };
         }
 
     }
