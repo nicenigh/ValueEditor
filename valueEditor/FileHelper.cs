@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
@@ -9,65 +10,148 @@ namespace ValueEditor
 {
     public class FileHelper
     {
-        public List<Content> Contents { get; private set; } = new List<Content>();
+        public List<Content> Contents { get; } = new List<Content> { };
+        private string splitPattern { get => @"^(?<a>\s*?)(?<b>\S+.*\S+?)(?<c>\s*[" + Settings.Split + @"]\s*?)(?<d>\S+.*\S+?)(?<e>\s*?)$"; }
+        private Regex splitRegex;
+        private string commentPattern { get => @"^\s*[/\*|\*/|\*|//+]+.*[\*/]*\s*$"; }
+        private Regex commentRegex;
+        public FileHelper()
+        {
+            splitRegex = new Regex(splitPattern, RegexOptions.Singleline | RegexOptions.Compiled);
+            commentRegex = new Regex(commentPattern, RegexOptions.Singleline | RegexOptions.Compiled);
+        }
 
-        public void Read(string path)
+        public void OpenFile(string path)
+        {
+            var file = new FileInfo(path);
+            if (!file.Exists) return;
+            using (MemoryMappedFile mfile = MemoryMappedFile.CreateFromFile(path, FileMode.Open))
+            {
+                using (MemoryMappedViewStream stream = mfile.CreateViewStream())
+                {
+                    Read(stream);
+                }
+            }
+        }
+
+        public void Read(Stream stream)
         {
             Contents.Clear();
-            using (MemoryMappedFile file = MemoryMappedFile.CreateFromFile(path, FileMode.Open))
+            using (StreamReader sr = new StreamReader(stream, Settings.Encoding))
             {
-                MainForm.nameBox.TextBox.Text = "";
-                MainForm.valueBox.TextBox.Text = "";
-                MainForm.nameBox.TextBox.Sync = false;
-                MainForm.valueBox.TextBox.Sync = false;
-
-                string pattern = @"^(?<a>\s*?)(?<b>.+?)(?<c>\s*=\s*?)(?<d>.+?)(?<e>\s*?)$";
-                Regex regex = new Regex(pattern, RegexOptions.Singleline);
-                long lineno = 0;
-
-                using (MemoryMappedViewStream stream = file.CreateViewStream())
+                string line;
+                while ((line = sr.ReadLine()) != null)
                 {
-                    using (StreamReader sr = new StreamReader(stream))
+                    if (line.Contains('\0')) continue;
+                    if (!string.IsNullOrWhiteSpace(line))
                     {
-                        string line;
-                        while ((line = sr.ReadLine()) != null)
+                        try
                         {
-                            Match match = regex.Match(line);
-                            if (match.Success)
+                            if (commentRegex.Match(line).Success)
                             {
-                                Contents.Add(new Content { Line = lineno, a = match.Groups["a"].Value, b = match.Groups["b"].Value, c = match.Groups["c"].Value, d = match.Groups["d"].Value, e = match.Groups["e"].Value });
+                                Contents.Add(new Content { Comment = true, Name = line });
                             }
                             else
                             {
-                                Contents.Add(new Content { Line = lineno, Name = line, Value = "" });
+                                Match match = splitRegex.Match(line);
+                                if (match.Success)
+                                {
+                                    var c = new Content { };
+                                    if (match.Groups.Count < 2)
+                                        Contents.Add(new Content { Name = line });
+                                    if (match.Groups.Count == 2)
+                                        Contents.Add(new Content
+                                        {
+                                            Name = match.Groups[1].Value,
+                                        });
+                                    else
+                                        Contents.Add(new Content
+                                        {
+                                            Left = match.Groups.Count > 1 ? match.Groups[1].Value : null,
+                                            Name = match.Groups.Count > 2 ? match.Groups[2].Value : null,
+                                            Middle = match.Groups.Count > 3 ? match.Groups[3].Value : null,
+                                            Value = match.Groups.Count > 4 ? match.Groups[4].Value : null,
+                                            Right = match.Groups.Count > 5 ? match.Groups[5].Value : null
+                                        });
+                                }
+                                else
+                                    Contents.Add(new Content { Comment = true, Name = line });
                             }
-                            lineno++;
                         }
+                        catch { }
+                    }
+                    else
+                    {
+                        Contents.Add(new Content { Blank = true, Name = line });
                     }
                 }
             }
-            MainForm.nameBox.TextBox.Text = string.Join("\r\n", Contents.Select(en => en.b));
-            MainForm.valueBox.TextBox.Text = string.Join("\r\n", Contents.Select(en => en.d));
-
-            MainForm.nameBox.TextBox.Sync = true;
-            MainForm.valueBox.TextBox.Sync = true;
         }
 
-
-        public void Save(string path)
+        public void Reload()
         {
-            File.Copy(path, path + ".bak");
-            FileStream fs = new FileStream(path, FileMode.Create);
-            StreamWriter sw = new StreamWriter(fs);
-            //开始写入
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < Contents.Count - 1; i++)
+            splitRegex = new Regex(splitPattern, RegexOptions.Singleline | RegexOptions.Compiled);
+            commentRegex = new Regex(commentPattern, RegexOptions.Singleline | RegexOptions.Compiled);
+            for (var i = 0; i < Contents.Count; i++)
             {
-                var content = Contents[i];
-                content.Name = MainForm.nameBox.TextBox.Lines[i];
-                content.Value = MainForm.valueBox.TextBox.Lines[i];
+                string line = Contents[i].ToString(); if (line.Contains('\0')) continue;
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    try
+                    {
+                        if (commentRegex.Match(line).Success)
+                        {
+                            Contents[i] = new Content { Comment = true, Name = line };
+                        }
+                        else
+                        {
+                            Match match = splitRegex.Match(line);
+                            if (match.Success)
+                            {
+                                var c = new Content { };
+                                if (match.Groups.Count < 2)
+                                    Contents[i] = new Content { Name = line };
+                                if (match.Groups.Count == 2)
+                                    Contents[i] = new Content
+                                    {
+                                        Name = match.Groups[1].Value,
+                                    };
+                                else
+                                    Contents[i] = new Content
+                                    {
+                                        Left = match.Groups.Count > 1 ? match.Groups[1].Value : null,
+                                        Name = match.Groups.Count > 2 ? match.Groups[2].Value : null,
+                                        Middle = match.Groups.Count > 3 ? match.Groups[3].Value : null,
+                                        Value = match.Groups.Count > 4 ? match.Groups[4].Value : null,
+                                        Right = match.Groups.Count > 5 ? match.Groups[5].Value : null
+                                    };
+                            }
+                            else
+                                Contents[i] = new Content { Comment = true, Name = line };
+                        }
+                    }
+                    catch { }
+                }
+                else
+                {
+                    Contents[i] = new Content { Blank = true, Name = line };
+                }
+            }
+        }
+
+        public void SaveFile(string path)
+        {
+            if (File.Exists(path))
+                File.Copy(path, path + ".bak", true);
+            FileStream fs = new FileStream(path, FileMode.Create);
+            StreamWriter sw = new StreamWriter(fs, Settings.Encoding);
+
+            StringBuilder builder = new StringBuilder();
+            foreach (var content in Contents)
+            {
                 builder.AppendLine(content.ToString());
             }
+            //开始写入
             sw.Write(builder.ToString());
             //清空缓冲区
             sw.Flush();

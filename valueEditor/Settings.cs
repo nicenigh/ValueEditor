@@ -8,11 +8,14 @@ namespace ValueEditor
 {
     public class Settings
     {
-        public static bool Sync
-        {
-            get => MainForm.nameBox.TextBox.Sync & MainForm.valueBox.TextBox.Sync;
-            set { MainForm.nameBox.TextBox.Sync = value; MainForm.valueBox.TextBox.Sync = value; }
-        }
+        public static bool ShowBlank { get; set; } = false;
 
+        public static bool ShowComment { get; set; } = false;
+
+        public static bool ShowIndent { get; set; } = false;
+
+        public static Encoding Encoding { get; set; } = Encoding.Default;
+
+        public static string Split { get; set; } = "=";
     }
 }

@@ -8,17 +8,22 @@ namespace ValueEditor
 {
     public class Content
     {
-        public string a { get; set; }
-        public string b { get; set; }
-        public string c { get; set; }
-        public string d { get; set; }
-        public string e { get; set; }
-        public long Line { get; set; }
-        public string Name { get => b; set => b = value; }
-        public string Value { get => d; set => d = value; }
+        public Content()
+        {
+            byte[] buffer = Guid.NewGuid().ToByteArray();
+            this.Id = BitConverter.ToInt64(buffer, 0);
+        }
+        public long Id { get; }
+        public string Left { get; set; }
+        public string Name { get; set; }
+        public string Middle { get; set; }
+        public string Value { get; set; }
+        public string Right { get; set; }
+        public bool Comment { get; set; } = false;
+        public bool Blank { get; set; } = false;
         public override string ToString()
         {
-            return (a ?? "") + (b ?? "") + (c ?? "") + (d ?? "") + (e ?? "");
+            return (Left ?? "") + (Name ?? "") + (Middle ?? "") + (Value ?? "") + (Right ?? "");
         }
     }
 }
